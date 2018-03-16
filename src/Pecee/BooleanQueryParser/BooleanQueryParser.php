@@ -4,7 +4,7 @@ namespace Pecee\BooleanQueryParser;
 
 class BooleanQueryParser
 {
-    private $splitter;
+    protected $splitter;
 
     public const AND_TOKEN = 'and';
     public const OR_TOKEN = 'or';
@@ -90,7 +90,7 @@ class BooleanQueryParser
      *
      * @return string
      */
-    private function firstClean(string $string) : string
+    protected function firstClean(string $string): string
     {
         $output = str_ireplace('title:', ' ', $string);
         $output = str_replace(['{', '[', '}', ']', '“', '”'], ['(', '(', ')', ')', '"', '"'], $output);
@@ -113,12 +113,12 @@ class BooleanQueryParser
      *
      * @return array
      */
-    private function secondClean(array $tokens): array
+    protected function secondClean(array $tokens): array
     {
         $toReturn = [];
 
         foreach ($tokens as $token) {
-            $token = preg_replace('/[^a-zA-Z0-9 @\(\)\-\+\*\"\.]/', '', $token);
+            $token = preg_replace('/[^\p{L}0-9 @\(\)\-\+\*\"\.]/ui', '', $token);
             $toReturn[] = $token;
         }
 
@@ -132,7 +132,7 @@ class BooleanQueryParser
      *
      * @return array
      */
-    private function mergeHyphenatedWords(array $tokens): array
+    protected function mergeHyphenatedWords(array $tokens): array
     {
         $toReturn = [];
 
@@ -183,7 +183,7 @@ class BooleanQueryParser
      *
      * @return array
      */
-    private function processAsterisk(array $tokens): array
+    protected function processAsterisk(array $tokens): array
     {
         $toReturn = [];
 
@@ -216,7 +216,7 @@ class BooleanQueryParser
      *
      * @return bool
      */
-    private function isBalanced(array $tokens): bool
+    protected function isBalanced(array $tokens): bool
     {
         $balanced = 0;
 
@@ -242,7 +242,7 @@ class BooleanQueryParser
      *
      * @return array
      */
-    private function splitIntoTokens(string $string): array
+    protected function splitIntoTokens(string $string): array
     {
         $tokens = [];
         $token = '';
@@ -257,7 +257,7 @@ class BooleanQueryParser
                 $substr = substr($string, $pos, $i);
                 if ($this->splitter->isSplitter($substr)) {
 
-                    if ($token !== "") {
+                    if ($token !== '') {
                         $tokens[] = $token;
                     }
 
@@ -287,7 +287,7 @@ class BooleanQueryParser
      *
      * @return array
      */
-    private function mergeQuotedStrings(array $tokens): array
+    protected function mergeQuotedStrings(array $tokens): array
     {
         $token_count = \count($tokens);
         $i = 0;
@@ -324,7 +324,7 @@ class BooleanQueryParser
      *
      * @return array
      */
-    private function clearSpaces(array $tokens): array
+    protected function clearSpaces(array $tokens): array
     {
         $toReturn = [];
 
@@ -346,7 +346,7 @@ class BooleanQueryParser
      *
      * @return array
      */
-    private function removeLeadingTrailingOperators(array $tokens) : array
+    protected function removeLeadingTrailingOperators(array $tokens): array
     {
         $arrayTouched = false;
         $stopOperators = [static::AND_TOKEN, static::OR_TOKEN, static::AND_TOKEN_CHARACTER, static::OR_TOKEN_CHARACTER];
@@ -376,7 +376,7 @@ class BooleanQueryParser
      *
      * @return array
      */
-    private function cleanStackedOperators(array $tokens): array
+    protected function cleanStackedOperators(array $tokens): array
     {
         $toReturn = [];
 
@@ -426,7 +426,7 @@ class BooleanQueryParser
      *
      * @return array
      */
-    private function addMissingAndOperators(array $tokens): array
+    protected function addMissingAndOperators(array $tokens): array
     {
         $toReturn = [];
 
@@ -465,7 +465,7 @@ class BooleanQueryParser
      *
      * @return array
      */
-    private function process(array $tokens, string $tokenToFind, string $characterToReplace): array
+    protected function process(array $tokens, string $tokenToFind, string $characterToReplace): array
     {
         $toReturn = [];
 
@@ -524,7 +524,7 @@ class BooleanQueryParser
      *
      * @return array
      */
-    private function processNot($tokens): array
+    protected function processNot($tokens): array
     {
         $toReturn = [];
 
@@ -547,7 +547,7 @@ class BooleanQueryParser
      *
      * @return string
      */
-    private function finalClean(string $string): string
+    protected function finalClean(string $string): string
     {
         $output = str_replace([static::NOT_TOKEN_CHARACTER . ' ', static::AND_TOKEN_CHARACTER . ' ', static::OR_TOKEN_CHARACTER . ' '], [' ' . static::NOT_TOKEN_CHARACTER, ' ' . static::AND_TOKEN_CHARACTER, ' ' . static::OR_TOKEN_CHARACTER], $string);
         $output = preg_replace('/\s\s+/', ' ', $output); // Remove double spaces
