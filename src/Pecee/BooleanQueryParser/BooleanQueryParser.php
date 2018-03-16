@@ -45,9 +45,6 @@ class BooleanQueryParser
             return null;
         }
 
-        // Clean the words of anything we dont want
-        $tokens = $this->secondClean($tokens);
-
         // Any hyphenated words should be merged to they are taken as is (john-paul should be "john-paul" not +john -paul)
         $tokens = $this->mergeHyphenatedWords($tokens);
 
@@ -104,25 +101,6 @@ class BooleanQueryParser
         $output = preg_replace('/\s\s+/', ' ', $output);
 
         return strtolower(trim($output));
-    }
-
-    /**
-     * We need to process each element in turn now and clean/sanitise it
-     *
-     * @param array $tokens
-     *
-     * @return array
-     */
-    protected function secondClean(array $tokens): array
-    {
-        $toReturn = [];
-
-        foreach ($tokens as $token) {
-            $token = preg_replace('/[^\p{L}0-9 @\(\)\-\+\*\"\.]/ui', '', $token);
-            $toReturn[] = $token;
-        }
-
-        return $toReturn;
     }
 
     /**
