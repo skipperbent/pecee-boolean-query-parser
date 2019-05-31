@@ -1,5 +1,5 @@
 {
-  "name": "pecee/boolean-query-parser",
+  "name": "araviaravi/boolean-query-parser",
   "description": "Convert a boolean search query into a query that is compatible with a fulltext search.",
   "homepage": "https://github.com/skipperbent/boolean-query-parser",
   "keywords": [
